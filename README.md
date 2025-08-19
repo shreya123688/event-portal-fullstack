@@ -56,6 +56,7 @@ Real-time Data: Store and fetch data dynamically via Lambda APIs.
 Responsiveness: Mobile and desktop friendly designs.
 
 Tech Stack:-
+
 Frontend-
 React, TypeScript, Tailwind CSS (custom styles)
 React Router v6 for navigation
@@ -80,18 +81,21 @@ Basic knowledge of terminal commands
 
 Backend Setup (AWS Lambda + Infrastructure)
 1. Prepare the backend folder
-//cd backend
-//rm -rf node_modules package-lock.json
-//npm cache clean --force
-//npm install --legacy-peer-deps
+```
+cd backend
+rm -rf node_modules package-lock.json
+npm cache clean --force
+npm install --legacy-peer-deps
+```
 
 2. Configure AWS Credentials
 aws configure
 Use an IAM user with permissions: DynamoDB, S3, Lambda, CloudFormation.
 
 3. Deploy using Serverless Framework
-//npm run deploy
-
+```
+npm run deploy
+```
 The deployment creates:
 DynamoDB table with GSIs
 S3 bucket (for image uploads)
@@ -100,37 +104,47 @@ Retrieve the API Gateway URL from the output.
 
 Frontend Setup
 1. Prepare the frontend folder
-//cd ../frontend
-//rm -rf node_modules package-lock.json
-//npm cache clean --force
-//npm install --legacy-peer-deps
-
+```
+cd ../frontend
+rm -rf node_modules package-lock.json
+npm cache clean --force
+npm install --legacy-peer-deps
+```
 2. Configure the API URL
 Create .env at project root:
-text
+```
 VITE_API_BASE=https://your-api-gateway-url
+```
 Replace your-api-gateway-url with the actual endpoint from your backend deployment.
 
 3. Run development server
-//npm run dev
+```
+npm run dev
+```
 Open http://localhost:5173 in your browser and explore the portal.
 
 Deployment
 Backend
 Deploy with Serverless Framework:
-//npm run deploy
-
+```
+npm run deploy
+```
 Frontend
 Build static files:
-//npm run build
+```
+npm run build
+```
 Host on static hosting:
 Netlify/Vercel: Deploy dist/ folder
 AWS S3 + CloudFront: Upload and configure CDN
 
 Known Issues & Troubleshooting
 1. Dependency conflicts
+
 Use:
+```
 npm install --legacy-peer-deps
+```
 or clean node_modules if errors persist.
 
 2. API Gateway errors (500/400)
