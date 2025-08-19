@@ -1,0 +1,120 @@
+service: event-portal
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-south-1
+  environment:
+    TABLE_NAME: ${self:service}-EventsTable-${sls:stage}
+    UPLOAD_BUCKET: ${self:service}-uploads-${sls:stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:UpdateItem
+          Resource:
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:provider.environment.TABLE_NAME}
+        - Effect: Allow
+          Action:
+            - s3:*
+          Resource:
+            - arn:aws:s3:::${self:provider.environment.UPLOAD_BUCKET}
+            - arn:aws:s3:::${self:provider.environment.UPLOAD_BUCKET}/*
+  httpApi:
+    cors: true
+
+plugins:
+  - serverless-offline
+
+build:
+  esbuild:
+    minify: true
+    target: node20
+    sourcemap: true
+
+package:
+  individually: true
+
+functions:
+  createEvent:
+    handler: src/handlers/createEvent.handler
+    events:
+      - httpApi:
+          path: /events
+          method: post
+
+  getEvent:
+    handler: src/handlers/getEvent.handler
+    events:
+      - httpApi:
+          path: /events/{id}
+          method: get
+
+  listEvents:
+    handler: src/handlers/listEvents.handler
+    events:
+      - httpApi:
+          path: /events
+          method: get
+
+  updateEvent:
+    handler: src/handlers/updateEvent.handler
+    events:
+      - httpApi:
+          path: /events/{id}
+          method: put
+
+  getUploadUrl:
+    handler: src/handlers/getUploadUrl.handler
+    events:
+      - httpApi:
+          path: /upload-url
+          method: post
+
+resources:
+  Resources:
+    EventsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE_NAME}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: organizer
+            AttributeType: S
+          - AttributeName: date
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: OrganizerIndex
+            KeySchema:
+              - AttributeName: organizer
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: DateIndex
+            KeySchema:
+              - AttributeName: date
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.UPLOAD_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders: ["*"]
+              AllowedMethods: [GET, PUT]
+              AllowedOrigins: ["*"]
+              MaxAge: 3000

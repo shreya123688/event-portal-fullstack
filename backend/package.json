@@ -1,0 +1,23 @@
+{
+  "name": "event-portal-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "offline": "serverless offline"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.621.0",
+    "@aws-sdk/lib-dynamodb": "^3.621.0",
+    "@aws-sdk/client-s3": "^3.621.0",
+    "@aws-sdk/s3-request-presigner": "^3.621.0"
+  },
+  "devDependencies": {
+    "serverless": "^4.1.19",
+    "serverless-offline": "^13.6.0",
+    "typescript": "^5.5.4",
+    "@types/aws-lambda": "^8.10.137",
+    "@types/node": "^20.14.9"
+  }
+}

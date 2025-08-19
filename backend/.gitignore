@@ -1,0 +1,33 @@
+cat > backend/.gitignore << 'EOF'
+# Serverless directories
+.serverless/
+
+# AWS deployment artifacts
+.aws-sam/
+
+# Environment variables
+.env
+
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build files
+*.js.map
+*.d.ts
+!src/**/*.d.ts
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# ESLint cache
+.eslintcache
+EOF
